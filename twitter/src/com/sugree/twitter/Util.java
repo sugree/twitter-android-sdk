@@ -142,11 +142,11 @@ public final class Util {
         if (method.equals("GET")) {
             url = url + "?" + encodeUrl(params);
         }
-        Log.d("Facebook-Util", method + " URL: " + url);
+        Log.d("Twitter-Util", method + " URL: " + url);
         HttpURLConnection conn = 
             (HttpURLConnection) new URL(url).openConnection();
         conn.setRequestProperty("User-Agent", System.getProperties().
-                getProperty("http.agent") + " FacebookAndroidSDK");
+                getProperty("http.agent") + " TwitterAndroidSDK");
         if (!method.equals("GET")) {
             Bundle dataparams = new Bundle();
             for (String key : params.keySet()) {
