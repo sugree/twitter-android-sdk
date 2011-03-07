@@ -125,7 +125,7 @@ public class TwDialog extends Dialog {
 			@Override
 			public void run() {
 				try {
-					mRequestToken = mTwitter.getOAuthRequestToken();
+					mRequestToken = mTwitter.getOAuthRequestToken(Twitter.CALLBACK_URI);
 					mUrl = mRequestToken.getAuthorizationURL();
 					mWebView.loadUrl(mUrl);
 
