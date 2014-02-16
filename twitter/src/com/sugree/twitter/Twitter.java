@@ -3,12 +3,7 @@ package com.sugree.twitter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
-import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
-import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
-import oauth.signpost.exception.OAuthCommunicationException;
-import oauth.signpost.exception.OAuthExpectationFailedException;
-import oauth.signpost.exception.OAuthMessageSignerException;
-import oauth.signpost.exception.OAuthNotAuthorizedException;
+import twitter4j.TwitterFactory;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -38,8 +33,7 @@ public class Twitter {
 	private String mSecretToken = null;
 	
 	private int mIcon;
-	private CommonsHttpOAuthConsumer mHttpOauthConsumer;
-	private CommonsHttpOAuthProvider mHttpOauthProvider;
+	private twitter4j.Twitter mTwitter;
 	
 	public Twitter(int icon) {
 		mIcon = icon;
@@ -50,14 +44,12 @@ public class Twitter {
 			String consumerKey,
 			String consumerSecret,
 			final DialogListener listener) {
-		mHttpOauthConsumer = new CommonsHttpOAuthConsumer(
+		mTwitter = new TwitterFactory().getInstance();
+		mTwitter.setOAuthConsumer(
 				consumerKey, consumerSecret);
-		mHttpOauthProvider = new CommonsHttpOAuthProvider(
-				OAUTH_REQUEST_TOKEN, OAUTH_ACCESS_TOKEN, OAUTH_AUTHORIZE);
 		CookieSyncManager.createInstance(ctx);
 		dialog(ctx, handler, new DialogListener() {
 
-			@Override
 			public void onComplete(Bundle values) {
 				CookieSyncManager.getInstance().sync();
 				setAccessToken(values.getString(ACCESS_TOKEN));
@@ -70,19 +62,16 @@ public class Twitter {
 				}
 			}
 
-			@Override
 			public void onTwitterError(TwitterError e) {
 				Log.d(TAG, "Login failed: "+e);
 				listener.onTwitterError(e);
 			}
 
-			@Override
 			public void onError(DialogError e) {
 				Log.d(TAG, "Login failed: "+e);
 				listener.onError(e);
 			}
 
-			@Override
 			public void onCancel() {
 				Log.d(TAG, "Login cancelled");
 				listener.onCancel();
@@ -103,7 +92,7 @@ public class Twitter {
 			Util.showAlert(ctx, "Error", "Application requires permission to access the Internet");
 			return;
 		}
-		new TwDialog(ctx, mHttpOauthProvider, mHttpOauthConsumer,
+		new TwDialog(ctx, mTwitter,
 				listener, mIcon).show();
 	}
 	
