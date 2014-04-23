@@ -132,7 +132,6 @@ public class TwDialog extends Dialog {
         	public void run() {
             	try {
         			mUrl = mProvider.retrieveRequestToken(mConsumer, Twitter.CALLBACK_URI);
-        	    	mWebView.loadUrl(mUrl);
         		} catch (OAuthMessageSignerException e) {
         			mListener.onError(new DialogError(e.getMessage(), -1, Twitter.OAUTH_REQUEST_TOKEN));
         		} catch (OAuthNotAuthorizedException e) {
@@ -142,6 +141,11 @@ public class TwDialog extends Dialog {
         		} catch (OAuthCommunicationException e) {
         			mListener.onError(new DialogError(e.getMessage(), -1, Twitter.OAUTH_REQUEST_TOKEN));
         		}
+				mHandler.post(new Runnable() {
+                    public void run() {
+                        mWebView.loadUrl(mUrl);
+                    }
+                });
         	}
         }.start();
     }
